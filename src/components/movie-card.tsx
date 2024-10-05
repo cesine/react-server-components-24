@@ -15,22 +15,17 @@ import {
 import { VoteStars } from './vote-stars'
 import { FavouriteHeart } from './favourite-heart'
 import { Movie } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
 type Props = {
-  movie: Pick<
-    Movie,
-    | 'id'
-    | 'title'
-    | 'posterPath'
-    | 'voteAverage'
-    | 'voteCount'
-    | 'overview'
-    | 'favourite'
-  >
+  movieId: number
 } & React.ComponentProps<typeof Card>
 
-export async function MovieCard({ movie, ...props }: Props) {
+export async function MovieCard({ movieId, ...props }: Props) {
   // await sleep(Math.random() * 5_000);
+  const movie = await prisma.movie.findUniqueOrThrow({
+    where: { id: movieId },
+  })
 
   return (
     <Card className="flex h-full flex-col shadow-lg" {...props}>

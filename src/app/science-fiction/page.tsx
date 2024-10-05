@@ -6,6 +6,9 @@ export default async function ScienceFictionMovies() {
   const movies = await prisma.genre
     .findUniqueOrThrow({ where: { id: 878 } })
     .movies({
+      select: {
+        id: true,
+      },
       orderBy: {
         title: 'asc',
       },
@@ -19,7 +22,7 @@ export default async function ScienceFictionMovies() {
 
       <GridLayout>
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={movie.id} movieId={movie.id} />
         ))}
       </GridLayout>
     </div>
