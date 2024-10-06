@@ -1,6 +1,7 @@
 import { GridLayout } from '@/components/grid-layout'
 import { MovieCard } from '@/components/movie-card'
 import { prisma } from '@/lib/prisma'
+import { Suspense } from 'react'
 
 export default async function ScienceFictionMovies() {
   const movies = await prisma.genre
@@ -21,9 +22,11 @@ export default async function ScienceFictionMovies() {
       </h1>
 
       <GridLayout>
+        {/* <Suspense fallback={<div>Loading...</div>}> */}
         {movies.map((movie) => (
           <MovieCard key={movie.id} movieId={movie.id} />
         ))}
+        {/* </Suspense> */}
       </GridLayout>
     </div>
   )
