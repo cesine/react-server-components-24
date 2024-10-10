@@ -14,8 +14,7 @@ import {
 } from './ui/card'
 import { VoteStars } from './vote-stars'
 import { FavouriteHeart } from './favourite-heart'
-import { Movie } from '@prisma/client'
-import { prisma } from '@/lib/prisma'
+import { getMovieOrThrow } from '@/server/movie'
 
 type Props = {
   movieId: number
@@ -23,9 +22,7 @@ type Props = {
 
 export async function MovieCard({ movieId, ...props }: Props) {
   // await sleep(Math.random() * 5_000);
-  const movie = await prisma.movie.findUniqueOrThrow({
-    where: { id: movieId },
-  })
+  const movie = await getMovieOrThrow(movieId)
 
   return (
     <Card className="flex h-full flex-col shadow-lg" {...props}>

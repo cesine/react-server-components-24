@@ -1,19 +1,10 @@
 import { GridLayout } from '@/components/grid-layout'
 import { MovieCard } from '@/components/movie-card'
-import { prisma } from '@/lib/prisma'
+import { getScienceFictionMovies } from '@/server/movie'
 import { Suspense } from 'react'
 
 export default async function ScienceFictionMovies() {
-  const movies = await prisma.genre
-    .findUniqueOrThrow({ where: { id: 878 } })
-    .movies({
-      select: {
-        id: true,
-      },
-      orderBy: {
-        title: 'asc',
-      },
-    })
+  const movies = await getScienceFictionMovies()
 
   return (
     <div className="p-4">
