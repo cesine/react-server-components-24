@@ -1,3 +1,5 @@
+'use client'
+
 import { PropsWithChildren } from 'react'
 
 import { cn } from '@/lib/utils'
@@ -16,6 +18,7 @@ export function Child({ children }: PropsWithChildren) {
       <h3 className="text-xl font-bold">Child Component</h3>
       <p>Rendered on: {isServer ? 'Server' : 'Client'}</p>
       <GrandChild />
+      {children}
     </div>
   )
 }
