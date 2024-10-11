@@ -18,7 +18,10 @@ export async function toggleFavourite(id: number) {
   revalidatePath('/')
 }
 
-export async function handleSubmitMovieForm(formData: FormData): Promise<void> {
+export async function handleSubmitMovieForm(
+  state: string,
+  formData: FormData,
+): Promise<string> {
   //   await sleep(1_000);
 
   const idValue = formData.get('id')
@@ -39,6 +42,10 @@ export async function handleSubmitMovieForm(formData: FormData): Promise<void> {
       }
     }
   })
+
+  if (!movie.title) {
+    return 'The movie title is required'
+  }
 
   await updateMovie(id, movie)
 

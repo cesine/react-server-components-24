@@ -16,19 +16,38 @@ import {
 } from './ui/form'
 import { SubmitButton } from './submit-button'
 import { useToast } from '@/hooks/use-toast'
+import { useActionState } from 'react'
 
 type Props = {
   movie: Movie
-  formAction: (formData: FormData) => void
+  formAction: (state: string, formData: FormData) => Promise<string>
 }
 
 export function MovieEditor({ movie, formAction }: Props) {
-  const errorMessage = ''
   const form = useForm<Movie>({
     defaultValues: movie,
   })
   const { toast } = useToast()
   const posterPath = form.watch('posterPath')
+
+  // Simple usage of useActionState()
+  // const [errorMessage, action, isPending] = useActionState(formAction, '')
+
+  const [errorMessage, action, isPending] = useActionState(
+    async (state: string, formData: FormData) => {
+      const result = await formAction(state, formData)
+
+      if (result) {
+        toast({
+          title: 'Error',
+          description: result,
+          variant: 'destructive',
+        })
+      }
+      return result
+    },
+    '',
+  )
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -43,7 +62,7 @@ export function MovieEditor({ movie, formAction }: Props) {
       </div>
       <div className="max-w-xl md:w-2/3 md:pl-8">
         <Form {...form}>
-          <form className="flex flex-col gap-4" action={formAction}>
+          <form className="flex flex-col gap-4" action={action}>
             <input type="hidden" name="id" value={movie.id} />
             {!!errorMessage ? (
               <div className="ml-1 text-xs font-medium text-red-500">
@@ -58,7 +77,11 @@ export function MovieEditor({ movie, formAction }: Props) {
                 <FormItem>
                   <FormLabel className="font-semibold">Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter movie title" {...field} />
+                    <Input
+                      placeholder="Enter movie title"
+                      disabled={isPending}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -74,6 +97,7 @@ export function MovieEditor({ movie, formAction }: Props) {
                     <Textarea
                       rows={5}
                       placeholder="Enter movie overview"
+                      disabled={isPending}
                       {...field}
                     />
                   </FormControl>
@@ -88,7 +112,7 @@ export function MovieEditor({ movie, formAction }: Props) {
                 <FormItem>
                   <FormLabel className="font-semibold">Release Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="date" disabled={isPending} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,7 +125,12 @@ export function MovieEditor({ movie, formAction }: Props) {
                 <FormItem>
                   <FormLabel className="font-semibold">Vote Average</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.1" {...field} />
+                    <Input
+                      type="number"
+                      step="0.1"
+                      disabled={isPending}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,7 +143,7 @@ export function MovieEditor({ movie, formAction }: Props) {
                 <FormItem>
                   <FormLabel className="font-semibold">Vote Count</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input type="number" disabled={isPending} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -127,7 +156,11 @@ export function MovieEditor({ movie, formAction }: Props) {
                 <FormItem>
                   <FormLabel className="font-semibold">Poster Path</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter poster path URL" {...field} />
+                    <Input
+                      placeholder="Enter poster path URL"
+                      disabled={isPending}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
