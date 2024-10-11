@@ -3,6 +3,7 @@
 import { Heart } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+import { toggleFavourite } from '@/server/actions'
 
 type Props = {
   favourite: boolean
@@ -16,8 +17,12 @@ export function FavouriteHeart({ favourite, movieId }: Props) {
       className={cn('cursor-pointer text-green-500', {
         'fill-green-500': favourite,
       })}
-      onClick={() => {
-        console.log(`We want to add this movie to favourites: ${movieId}`)
+      onClick={async () => {
+        try {
+          await toggleFavourite(movieId)
+        } catch (error) {
+          console.error(error)
+        }
       }}
     />
   )
