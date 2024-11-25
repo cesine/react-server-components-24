@@ -19,9 +19,13 @@ import { useToast } from '@/hooks/use-toast'
 
 type Props = {
   movie: Movie
+  formAction: (formData: FormData) => void
 }
 
-export function MovieEditor({ movie }: Props) {
+export function MovieEditor({
+  movie,
+  formAction,
+}: Props) {
   const errorMessage = ''
   const form = useForm<Movie>({
     defaultValues: movie,
@@ -42,7 +46,7 @@ export function MovieEditor({ movie }: Props) {
       </div>
       <div className="max-w-xl md:w-2/3 md:pl-8">
         <Form {...form}>
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" action={formAction}>
             <input type="hidden" name="id" value={movie.id} />
             {!!errorMessage ? (
               <div className="ml-1 text-xs font-medium text-red-500">

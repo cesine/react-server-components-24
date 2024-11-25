@@ -14,7 +14,9 @@ export function Parent() {
     >
       <h2 className="text-2xl font-bold">Parent Component</h2>
       <p>Rendered on: {isServer ? 'Server' : 'Client'}</p>
-      <Child />
+      <Child>
+        <GrandChild />
+      </Child>
     </div>
   )
 }
