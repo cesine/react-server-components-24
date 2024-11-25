@@ -2,5 +2,12 @@ import { useFormStatus } from 'react-dom'
 import { Button } from './ui/button'
 
 export function SubmitButton({ children }: React.PropsWithChildren) {
-  return <Button type="submit">{children}</Button>
+  const { pending } = useFormStatus()
+
+  console.log('pending', pending)
+  return (
+    <Button disabled={pending} type="submit">
+      {children}
+    </Button>
+  )
 }

@@ -16,22 +16,38 @@ import {
 } from './ui/form'
 import { SubmitButton } from './submit-button'
 import { useToast } from '@/hooks/use-toast'
+import { useActionState } from 'react'
 
 type Props = {
   movie: Movie
-  formAction: (formData: FormData) => void
+  formAction: (state: string | void, formData: FormData) => Promise<string | void>
 }
 
 export function MovieEditor({
   movie,
   formAction,
 }: Props) {
-  const errorMessage = ''
   const form = useForm<Movie>({
     defaultValues: movie,
   })
   const { toast } = useToast()
   const posterPath = form.watch('posterPath')
+
+  const [errorMessage, action, isPending] = useActionState(
+    async (state: string | void, formData: FormData) => {
+      const result = await formAction(state, formData)
+
+      if (result) {
+        toast({
+          title: 'Error',
+          description: result,
+          variant: 'destructive',
+        })
+      }
+      return result
+    },
+    '',
+  )
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -46,7 +62,7 @@ export function MovieEditor({
       </div>
       <div className="max-w-xl md:w-2/3 md:pl-8">
         <Form {...form}>
-          <form className="flex flex-col gap-4" action={formAction}>
+          <form className="flex flex-col gap-4" action={action}>
             <input type="hidden" name="id" value={movie.id} />
             {!!errorMessage ? (
               <div className="ml-1 text-xs font-medium text-red-500">
