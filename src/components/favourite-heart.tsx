@@ -1,3 +1,4 @@
+'use client'
 import { Heart } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -14,6 +15,9 @@ export function FavouriteHeart({ favourite, movieId }: Props) {
       className={cn('cursor-pointer text-green-500', {
         'fill-green-500': favourite,
       })}
+      onClick={() => {
+        console.log('clicked')
+      }}
     />
   )
 }
